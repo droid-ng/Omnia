@@ -32,6 +32,9 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import org.commonmark.html.HtmlRenderer
+import org.commonmark.node.Node
+import org.commonmark.parser.Parser
 import java.io.IOException
 import java.io.InputStream
 import java.net.URISyntaxException
@@ -47,6 +50,8 @@ open class OmniaActivity : Activity() {
     private var mWebView: WebView? = null
     private var mLoading: View? = null
     private var mIntent: Intent? = null
+
+    private var isContentMarkdown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +75,12 @@ open class OmniaActivity : Activity() {
         s.javaScriptEnabled = false
         s.defaultTextEncodingName = "utf-8"
         mIntent = intent
+
+        if (intent.type != null && (intent.type == "text/markdown" || intent.type == "application/markdown" ||
+                    intent.type == ".*\\\\.md")) {
+            isContentMarkdown = true
+        }
+
         setBackButton()
         loadUrl()
     }
@@ -82,7 +93,30 @@ open class OmniaActivity : Activity() {
         if (mIntent!!.hasExtra(Intent.EXTRA_TITLE)) {
             title = mIntent!!.getStringExtra(Intent.EXTRA_TITLE)
         }
-        mWebView!!.loadUrl(mIntent!!.data.toString())
+
+        // Choose the file type.
+        if (isContentMarkdown) {
+            val inputStream = contentResolver.openInputStream(intent.data!!)
+            val fileContent = inputStream?.bufferedReader().use { it?.readText() }
+            inputStream?.close()
+
+            if (fileContent != null) {
+                val parser: Parser = Parser.builder().build()
+                val document: Node = parser.parse(fileContent)
+                val renderer: HtmlRenderer = HtmlRenderer.builder().build()
+                val rawHtmlDoc = renderer.render(document)
+
+                mWebView!!.loadDataWithBaseURL(null, rawHtmlDoc,
+                                    "text/html", "UTF-8", null)
+            } else {
+                Toast.makeText(
+                    this@OmniaActivity,
+                    R.string.cannot_open_link, Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
+            mWebView!!.loadUrl(mIntent!!.data.toString())
+        }
     }
 
     private fun setBackButton() {
@@ -106,7 +140,9 @@ open class OmniaActivity : Activity() {
 
     private inner class ChromeClient : WebChromeClient() {
         override fun onReceivedTitle(view: WebView, title: String) {
-            if (!intent.hasExtra(Intent.EXTRA_TITLE)) {
+            if (isContentMarkdown) {
+                this@OmniaActivity.title = "Markdown file"
+            } else if (!intent.hasExtra(Intent.EXTRA_TITLE)) {
                 this@OmniaActivity.title = title
             }
         }

@@ -35,6 +35,9 @@
                 <data android:mimeType="text/plain"/>
                 <data android:mimeType="application/xhtml+xml"/>
                 <data android:mimeType="application/vnd.wap.xhtml+xml"/>
+                <data android:mimeType="text/markdown" />
+                <data android:mimeType="application/markdown" />
+                <data android:pathPattern=".*\\.md" />
             </intent-filter>
         </activity>
         <meta-data android:name="android.nfc.disable_beam_default"
