@@ -23,7 +23,8 @@
     <original-package android:name="com.android.htmlviewer"/>
 
     <application android:label="@string/app_label"
-         android:supportsRtl="true">
+         android:supportsRtl="true"
+         android:icon="@mipmap/ic_launcher">
         <activity android:name="HTMLViewerActivity"
              android:label="@string/app_label"
              android:theme="@android:style/Theme.DeviceDefault.Settings"
