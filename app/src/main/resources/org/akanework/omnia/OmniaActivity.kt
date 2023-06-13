@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.android.htmlviewer;
+package org.akanework.omnia;
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -42,7 +42,7 @@ import java.util.zip.GZIPInputStream
  * purposefully very limited in what it supports, including no network or
  * JavaScript.
  */
-open class HTMLViewerActivity : Activity() {
+open class OmniaActivity : Activity() {
 
     private var mWebView: WebView? = null
     private var mLoading: View? = null
@@ -107,7 +107,7 @@ open class HTMLViewerActivity : Activity() {
     private inner class ChromeClient : WebChromeClient() {
         override fun onReceivedTitle(view: WebView, title: String) {
             if (!intent.hasExtra(Intent.EXTRA_TITLE)) {
-                this@HTMLViewerActivity.title = title
+                this@OmniaActivity.title = title
             }
         }
     }
@@ -125,7 +125,7 @@ open class HTMLViewerActivity : Activity() {
             } catch (ex: URISyntaxException) {
                 Log.w(TAG, "Bad URI " + url + ": " + ex.message)
                 Toast.makeText(
-                    this@HTMLViewerActivity,
+                    this@OmniaActivity,
                     R.string.cannot_open_link, Toast.LENGTH_SHORT
                 ).show()
                 return true
@@ -150,13 +150,13 @@ open class HTMLViewerActivity : Activity() {
             } catch (ex: ActivityNotFoundException) {
                 Log.w(TAG, "No application can handle $url")
                 Toast.makeText(
-                    this@HTMLViewerActivity,
+                    this@OmniaActivity,
                     R.string.cannot_open_link, Toast.LENGTH_SHORT
                 ).show()
             } catch (ex: SecurityException) {
                 Log.w(TAG, "No application can handle $url")
                 Toast.makeText(
-                    this@HTMLViewerActivity,
+                    this@OmniaActivity,
                     R.string.cannot_open_link, Toast.LENGTH_SHORT
                 ).show()
             }
