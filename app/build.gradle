@@ -1,0 +1,19 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace "com.android.htmlviewer"
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.android.htmlviewer"
+        minSdk 33
+        targetSdk 33
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
