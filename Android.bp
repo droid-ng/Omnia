@@ -4,9 +4,16 @@ package {
 }
 
 android_app {
-    name: "HTMLViewer",
-    manifest: "AndroidManifest.xml",
-    srcs: ["**/*.java"],
-    exclude_srcs: ["src/com/android/htmlviewer/CarHTMLViewerActivity.java"],
+    name: "Omnia",
+    manifest: "app/src/main/AndroidManifest.xml",
+    resource_dirs: [
+        "app/src/main/res"
+    ],
+    srcs: [
+        "app/src/main/java/**/*.kt"
+    ],
+    static_libs: [
+    	"commonmark-java",
+    ],
     sdk_version: "current",
 }
